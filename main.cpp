@@ -5,6 +5,11 @@
 #include <log/log.h>
 #include <android-base/properties.h>
 
+#ifdef RECOVERY_PROP
+#define TARGET_UDC_PROP "sys.usb.controller"
+#else
+#define TARGET_UDC_PROP "vendor.usb.controller"
+#endif
 // Set the UDC controller for the ConfigFS USB Gadgets.
 // Read the UDC controller in use from "/sys/class/udc".
 // In case of multiple UDC controllers select the first one.
@@ -19,7 +24,7 @@ static void SetUsbController() {
             continue;
         }
 
-        android::base::SetProperty("sys.usb.controller", dp->d_name);
+        android::base::SetProperty(TARGET_UDC_PROP, dp->d_name);
         ALOGI("USB controller successfully detected: %s", dp->d_name);
         break;
     }
